@@ -4,7 +4,7 @@ module HexletCode
   # Class for generating HTML tags.
   class Tag
     # Generates an HTML tag.
-    def self.build(name, attributes = {}, &_block)
+    def self.build(name, attributes = {}, &)
       attrs = attributes.map { |key, value| "#{key}=\"#{value}\"" }.join(" ")
       attrs_string = attrs.empty? ? "" : " #{attrs}"
 
