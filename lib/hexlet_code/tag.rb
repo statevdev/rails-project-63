@@ -17,3 +17,5 @@ module HexletCode
     end
   end
 end
+
+# puts HexletCode::Tag.build('form', class: 'hello') {}
