@@ -5,4 +5,4 @@ install:
 lint:
 	bundle exec rubocop .
 testing:
-	rake test
+	bundle exec rake test
