@@ -1,3 +1,5 @@
+[![Actions Status](https://github.com/statevdev/rails-project-63/actions/workflows/main.yml/badge.svg)](https://github.com/statevdev/rails-project-63/actions)
+
 # HexletCode
 
 TODO: Delete this and the text below, and describe your gem
