@@ -2,26 +2,44 @@
 
 require_relative "hexlet_code/version"
 
-# Module for HexletCode, a library for generating HTML tags.
+# Главный модуль библиотеки для генерации форм и html-тэгов.
 module HexletCode
   class Error < StandardError; end
 
   autoload :Tag, File.expand_path("hexlet_code/tag.rb", __dir__)
 
-  def self.form_for(_user, **attrs, &)
-    attrs = { "action" => attrs.delete(:url) || "#", "method" => "post" }.merge(attrs)
-    HexletCode::Tag.build("form", attrs, &proc {})
+  # Класс для создания инпутов формы.
+  class Input
+    attr_reader :inputs
+
+    def initialize(user)
+      @user = user
+      @inputs = []
+    end
+
+    def input(attr, **attrs)
+      tag = attrs[:as] || :input
+      attrs.delete(:as)
+      input = HexletCode::Tag.send(tag, @user, attr, attrs)
+      inputs << input
+      input
+    end
   end
 
-  def self.create_user(*fields, **options)
-    options[:keyword_init] ||= true
-    Struct.new(*fields, **options).new
+  def self.form_for(user, **attrs, &)
+    attrs = { "action" => attrs.delete(:url) || "#", "method" => "post" }.merge(attrs)
+
+    form = Input.new(user)
+
+    return HexletCode::Tag.build("form", attrs, &proc {}) unless block_given?
+
+    yield(form)
+
+    Tag.build("form", attrs) { "\n#{form.inputs.join("\n")}\n" }
+  end
+
+  def self.create_user_with(**attributes)
+    user_struct = Struct.new(*attributes.keys, keyword_init: true)
+    user_struct.new(**attributes)
   end
 end
-
-# user = HexletCode.create_user(:name, :job)
-# user.name = 'rob'
-#
-# puts HexletCode.form_for(user)
-# puts HexletCode.form_for(user, class: 'hexlet-form')
-# puts HexletCode.form_for(user, url: '/profile', class: 'hexlet-form')

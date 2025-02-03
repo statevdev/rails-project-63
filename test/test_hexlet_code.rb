@@ -7,17 +7,42 @@ class TestHexletCode < Minitest::Test
     refute_nil ::HexletCode::VERSION
   end
 
-  def test_form_for
-    user = HexletCode.create_user(:test)
+  def setup
+    @user = HexletCode.create_user_with(name: "rob", job: "hexlet", gender: "m")
+  end
 
-    forms = [
-      '<form action="#" method="post"></form>',
-      '<form action="#" method="post" class="hexlet-form"></form>',
-      '<form action="/profile" method="post" class="hexlet-form"></form>'
-    ]
+  def test_form_for_without_inputs
+    fixture = File.read("test/fixtures/fixture_without_inputs.html").chomp
+    test = HexletCode.form_for(@user)
+    assert { test == fixture }
+  end
 
-    assert { HexletCode.form_for(user) == forms[0] }
-    assert { HexletCode.form_for(user, class: "hexlet-form") == forms[1] }
-    assert { HexletCode.form_for(user, url: "/profile", class: "hexlet-form") == forms[2] }
+  def test_form_for_new_attr
+    fixture = File.read("test/fixtures/fixture_with_new_attr.html").chomp
+    test = HexletCode.form_for(@user, class: "hexlet-form")
+    assert { test == fixture }
+  end
+
+  def test_form_for_reassign_attr
+    fixture = File.read("test/fixtures/fixture_with_reassign_attr.html").chomp
+    test = HexletCode.form_for(@user, url: "/profile", class: "hexlet-form")
+    assert { test == fixture }
+  end
+
+  def test_form_for_inputs
+    fixture = File.read("test/fixtures/fixture_with_inputs.html").chomp
+    test = HexletCode.form_for @user do |f|
+      f.input :name
+      f.input :job, as: :text
+      f.input :name, class: "user-input"
+      f.input :job, as: :text, rows: 50, cols: 50
+    end
+    assert { test == fixture }
+  end
+
+  def test_form_for_no_method
+    HexletCode.form_for @user do |f|
+      assert_raises(NoMethodError) { f.input :age }
+    end
   end
 end
