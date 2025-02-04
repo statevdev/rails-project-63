@@ -3,9 +3,7 @@
 
 # HexletCode
 
-TODO: Delete this and the text below, and describe your gem
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/hexlet_code`. To experiment with that code, run `bin/console` for an interactive prompt.
+This gem provides an easy-to-use interface for creating HTML forms.
 
 ## Installation
 
@@ -25,7 +23,19 @@ gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+user = HexletCode.create_user_with(name: 'rob', job: 'hexlet', gender: 'm')
+
+HexletCode.form_for user do |f|
+  f.input :name
+  f.input :job, as: text
+end
+
+# <form action="#" method="post">
+#<input name="name" type="text" value="rob">
+#<textarea name="job" cols="20" rows="40">hexlet</textarea>
+# </form>
+```
 
 ## Development
 
