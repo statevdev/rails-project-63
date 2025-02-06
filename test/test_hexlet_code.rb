@@ -7,8 +7,9 @@ class TestHexletCode < Minitest::Test
     refute_nil ::HexletCode::VERSION
   end
 
+  User = Struct.new(:name, :job, :gender, keyword_init: true)
   def setup
-    @user = HexletCode.create_user_with(name: "rob", job: "hexlet", gender: "m")
+    @user = User.new(name: "rob", job: "hexlet", gender: "m")
   end
 
   def test_form_for_without_inputs
@@ -38,6 +39,17 @@ class TestHexletCode < Minitest::Test
       f.input :job, as: :text, rows: 50, cols: 50
     end
     assert { test == fixture }
+  end
+
+  def test_form_for_submit
+    fixture = File.read("test/fixtures/fixture_with_submit.html").chomp
+    test = HexletCode.form_for @user, url: "#" do |f|
+      f.input :name
+      f.input :job
+      f.submit
+      f.submit "Wow"
+    end
+    assert_equal test, fixture
   end
 
   def test_form_for_no_method

@@ -7,39 +7,31 @@ module HexletCode
   class Error < StandardError; end
 
   autoload :Tag, File.expand_path("hexlet_code/tag.rb", __dir__)
+  autoload :Inputs, File.expand_path("hexlet_code/tag.rb", __dir__)
 
-  # Класс для создания инпутов формы.
-  class Input
-    attr_reader :inputs
+  def self.form_for(user, form_options = {}, &)
+    default_form_options = { action: form_options.delete(:url) || "#", method: "post" }
 
-    def initialize(user)
-      @user = user
-      @inputs = []
+    merged_options = default_form_options.merge(form_options)
+
+    if block_given?
+      inputs = Inputs.new(user)
+
+      yield(inputs)
+
+      Tag.build(:form, user.to_h, merged_options) { "\n#{inputs.inputs.join("\n")}\n" }
+    else
+      Tag.build(:form, user.to_h, merged_options, &proc {})
     end
-
-    def input(attr, **attrs)
-      tag = attrs[:as] || :input
-      attrs.delete(:as)
-      input = HexletCode::Tag.send(tag, @user, attr, attrs)
-      inputs << input
-      input
-    end
-  end
-
-  def self.form_for(user, **attrs, &)
-    attrs = { "action" => attrs.delete(:url) || "#", "method" => "post" }.merge(attrs)
-
-    form = Input.new(user)
-
-    return HexletCode::Tag.build("form", attrs, &proc {}) unless block_given?
-
-    yield(form)
-
-    Tag.build("form", attrs) { "\n#{form.inputs.join("\n")}\n" }
-  end
-
-  def self.create_user_with(**attributes)
-    user_struct = Struct.new(*attributes.keys, keyword_init: true)
-    user_struct.new(**attributes)
   end
 end
+User = Struct.new(:name, :job, :gender, keyword_init: true)
+user = User.new(name: "rob", job: "hexlet", gender: "m")
+
+result = HexletCode.form_for user do |f|
+  f.input :name
+  f.input :job
+  f.submit "Wow"
+end
+
+puts result

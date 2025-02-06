@@ -1,52 +1,57 @@
 # frozen_string_literal: true
 
-module HexletCode
-  # Класс для генерации HTML-тэгов.
-  class Tag
-    def self.build(name, attributes = {}, &)
-      attrs = attributes.map { |key, value| "#{key}=\"#{value}\"" }.join(" ")
+# Класс для сборки HTML-тэгов.
+class Tag
+  def self.build(tag, _users_hash, user_options = {}, &)
+    tag_attrs_string = user_options.map { |key, value| "#{key}=\"#{value}\"" }.join(" ")
+    return "<#{tag} #{tag_attrs_string}>" unless block_given?
 
-      attrs_string = attrs.empty? ? "" : " #{attrs}"
+    "<#{tag} #{tag_attrs_string}>#{yield}</#{tag}>"
+  end
+end
 
-      if block_given?
-        content = yield
-        "<#{name}#{attrs_string}>#{content}</#{name}>"
-      else
-        "<#{name}#{attrs_string}>"
-      end
-    end
+# Класс для создания инпутов формы.
+class Inputs
+  attr_reader :inputs
 
-    def self.tag(name, default_attrs = {}, &)
-      lambda do |user, attr, attrs = {}|
-        merged_attrs = build_attributes(user, attr, default_attrs, attrs)
-        process_block(name, merged_attrs, user, attr, &)
-      end
-    end
+  def initialize(user)
+    @user = user
+    @inputs = []
+  end
 
-    class << self
-      define_method(:text, Tag.tag(:textarea, name: :user_attr, cols: "20", rows: "40", &proc {}))
-      define_method(:input, Tag.tag(:input, name: :user_attr, type: "text", value: :user_attr_value))
-      define_method(:label, Tag.tag(:label, for: :user_attr, &proc {}))
-      define_method(:select, Tag.tag(:select, name: :user_attr_value))
-    end
+  def input(input_attr, input_attrs = {})
+    tag = input_attrs.delete(:as) || :input
+    input = Inputs.send(tag, @user, input_attr, input_attrs)
+    inputs << input
+    input
+  end
 
-    def self.build_attributes(user, attr, default_attrs, attrs)
-      result = default_attrs.transform_values do |value|
-        case value
-        when :user_attr then attr
-        when :user_attr_value then user.send(attr)
-        else value
-        end
-      end
-      result.merge(attrs)
-    end
+  def submit(text_for_button = "Save")
+    submit_attrs = { type: "submit", value: text_for_button }
+    submit = Tag.build(:input, {}, submit_attrs)
+    inputs << submit
+    submit
+  end
 
-    def self.process_block(name, attrs, user, attr, &)
-      if block_given?
-        build(name, attrs) { user.send(attr) }
-      else
-        build(name, attrs)
-      end
-    end
+  def self.input(user, input_attr, input_attrs)
+    default_input_attrs = { name: input_attr, type: "text", value: user.public_send(input_attr) }
+    merged_attrs = default_input_attrs.merge(input_attrs)
+
+    label = self.label(user, input_attr)
+    "#{label}\n#{Tag.build(:input, user.to_h, merged_attrs)}"
+  end
+
+  def self.text(user, input_attr, input_attrs)
+    default_input_attrs = { name: input_attr, cols: 20, rows: 40 }
+    merged_attrs = default_input_attrs.merge(input_attrs)
+
+    Tag.build(:textarea, user.to_h, merged_attrs) { user.public_send(input_attr) }
+  end
+
+  def self.label(user, input_attr, input_attrs = {})
+    default_input_attrs = { for: input_attr }
+    merged_attrs = default_input_attrs.merge(input_attrs)
+
+    Tag.build(:label, user.to_h, merged_attrs) { input_attr.to_s.capitalize }
   end
 end
