@@ -24,7 +24,8 @@ gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
 ## Usage
 
 ```ruby
-user = HexletCode.create_user_with(name: 'rob', job: 'hexlet', gender: 'm')
+User = Struct.new(:name, :job, keyword_init: true)
+user = User.new(name: 'rob', job: 'hexlet')
 
 HexletCode.form_for user do |f|
   f.input :name
