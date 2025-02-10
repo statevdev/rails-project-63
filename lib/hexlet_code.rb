@@ -6,7 +6,7 @@ module HexletCode
   class Error < StandardError; end
 
   autoload :Tag, File.expand_path("hexlet_code/tag.rb", __dir__)
-  autoload :Inputs, File.expand_path("hexlet_code/tag.rb", __dir__)
+  autoload :Inputs, File.expand_path("hexlet_code/inputs.rb", __dir__)
 
   def self.form_for(object, form_options = {}, &)
     default_form_options = { action: form_options.delete(:url) || "#", method: "post" }
