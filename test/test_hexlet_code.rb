@@ -49,7 +49,7 @@ class TestHexletCode < Minitest::Test
       f.submit
       f.submit "Wow"
     end
-    assert_equal test, fixture
+    assert { test == fixture }
   end
 
   def test_form_for_no_method
