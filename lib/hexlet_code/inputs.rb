@@ -2,7 +2,8 @@
 
 class Inputs
   attr_reader :inputs
-  autoload :Tag, File.expand_path("tag.rb", __dir__)
+
+  autoload :Tag, File.expand_path('tag.rb', __dir__)
 
   def initialize(object)
     @object = object
@@ -16,15 +17,15 @@ class Inputs
     input
   end
 
-  def submit(text_for_button = "Save")
-    submit_attrs = { type: "submit", value: text_for_button }
+  def submit(text_for_button = 'Save')
+    submit_attrs = { type: 'submit', value: text_for_button }
     submit = Tag.build(:input, {}, submit_attrs)
     inputs << submit
     submit
   end
 
   def self.input(object, input_attr, input_attrs)
-    default_input_attrs = { name: input_attr, type: "text", value: object.public_send(input_attr) }
+    default_input_attrs = { name: input_attr, type: 'text', value: object.public_send(input_attr) }
     merged_attrs = default_input_attrs.merge(input_attrs)
 
     label = self.label(object, input_attr)
@@ -45,4 +46,3 @@ class Inputs
     Tag.build(:label, object.to_h, merged_attrs) { input_attr.to_s.capitalize }
   end
 end
-
