@@ -3,6 +3,7 @@
 module HexletCode
   autoload :Tag, File.expand_path('tag.rb', __dir__)
   autoload :HTMLTemplates, File.expand_path('html_templates.rb', __dir__)
+  autoload :FormRenderer, File.expand_path('form_renderer.rb', __dir__)
 
   class FormBuilder
     attr_reader :inputs
@@ -14,7 +15,7 @@ module HexletCode
 
     def input(input_attr, input_attrs = {})
       tag = input_attrs.delete(:as) || :input
-      input = HTMLTemplates.send(tag, @object, input_attr, input_attrs)
+      input = FormRenderer.to_html(tag, @object, input_attr, input_attrs)
       inputs << input
       input
     end
