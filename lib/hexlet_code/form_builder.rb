@@ -6,24 +6,24 @@ module HexletCode
   autoload :FormRenderer, File.expand_path('form_renderer.rb', __dir__)
 
   class FormBuilder
-    attr_reader :inputs
+    attr_reader :form_body
 
-    def initialize(object)
-      @object = object
-      @inputs = []
+    def initialize(entity)
+      @entity = entity
+      @form_body = []
     end
 
     def input(input_attr, input_attrs = {})
       tag = input_attrs.delete(:as) || :input
-      input = FormRenderer.to_html(tag, @object, input_attr, input_attrs)
-      inputs << input
+      input = FormRenderer.to_html(tag, @entity, input_attr, input_attrs)
+      form_body << input
       input
     end
 
     def submit(text_for_button = 'Save')
       submit_attrs = { type: 'submit', value: text_for_button }
       submit = Tag.build(:input, {}, submit_attrs)
-      inputs << submit
+      form_body << submit
       submit
     end
   end

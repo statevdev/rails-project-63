@@ -18,7 +18,7 @@ module HexletCode
 
       yield(inputs)
 
-      Tag.build(:form, object.to_h, merged_options) { "\n#{inputs.inputs.join("\n")}\n" }
+      Tag.build(:form, object.to_h, merged_options) { "\n#{inputs.form_body.join("\n")}\n" }
     else
       Tag.build(:form, object.to_h, merged_options, &proc {})
     end
