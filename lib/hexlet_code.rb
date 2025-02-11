@@ -3,10 +3,10 @@
 require_relative 'hexlet_code/version'
 
 module HexletCode
-  class Error < StandardError; end
-
   autoload :Tag, File.expand_path('hexlet_code/tag.rb', __dir__)
-  autoload :Inputs, File.expand_path('hexlet_code/inputs.rb', __dir__)
+  autoload :FormBuilder, File.expand_path('hexlet_code/form_builder.rb', __dir__)
+
+  class Error < StandardError; end
 
   def self.form_for(object, form_options = {}, &)
     default_form_options = { action: form_options.delete(:url) || '#', method: 'post' }
@@ -14,7 +14,7 @@ module HexletCode
     merged_options = default_form_options.merge(form_options)
 
     if block_given?
-      inputs = Inputs.new(object)
+      inputs = FormBuilder.new(object)
 
       yield(inputs)
 
