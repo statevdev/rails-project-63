@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 module HexletCode
-  autoload :Tag, File.expand_path('tag.rb', __dir__)
-  autoload :HTMLTemplates, File.expand_path('html_templates.rb', __dir__)
-  autoload :FormRenderer, File.expand_path('form_renderer.rb', __dir__)
-
   class FormBuilder
     attr_reader :form_body
 
