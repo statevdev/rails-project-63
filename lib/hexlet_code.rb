@@ -6,6 +6,8 @@ module HexletCode
   autoload :Tag, File.expand_path('hexlet_code/tag.rb', __dir__)
   autoload :FormBuilder, File.expand_path('hexlet_code/form_builder.rb', __dir__)
   autoload :Inputs, File.expand_path('hexlet_code/inputs.rb', __dir__)
+  autoload :HTMLTemplates, File.expand_path('html_templates.rb', __dir__)
+  autoload :FormRenderer, File.expand_path('form_renderer.rb', __dir__)
 
   class Error < StandardError; end
 
