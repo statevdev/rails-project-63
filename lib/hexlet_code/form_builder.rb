@@ -8,23 +8,27 @@ module HexletCode
   class FormBuilder
     attr_reader :form_body
 
-    def initialize(entity)
+    def initialize(entity, attributes)
       @entity = entity
-      @form_body = []
+      @form_body = {
+        inputs: [],
+        submit: { options: nil },
+        form_options: {
+          action: attributes.fetch(:url, '#'),
+          method: attributes.fetch(:method, 'post')
+        }.merge(attributes.except(:url, :method))
+      }
     end
 
     def input(input_attr, input_attrs = {})
-      tag = input_attrs.delete(:as) || :input
-      input = FormRenderer.to_html(tag, @entity, input_attr, input_attrs)
-      form_body << input
-      input
+      input = input_attrs.delete(:as) || :input
+      form_body[:inputs] << [input, @entity, input_attr, input_attrs]
     end
 
     def submit(text_for_button = 'Save')
-      submit_attrs = { type: 'submit', value: text_for_button }
-      submit = Tag.build(:input, {}, submit_attrs)
-      form_body << submit
-      submit
+      # submit = Tag.build(:input, submit_attrs)
+      # form_body[:submit][:options] = submit
+      form_body[:inputs] << [:submit, nil, nil, text_for_button]
     end
   end
 end
