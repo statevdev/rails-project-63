@@ -5,22 +5,31 @@ require_relative 'hexlet_code/version'
 module HexletCode
   autoload :Tag, File.expand_path('hexlet_code/tag.rb', __dir__)
   autoload :FormBuilder, File.expand_path('hexlet_code/form_builder.rb', __dir__)
+  autoload :Inputs, File.expand_path('hexlet_code/inputs.rb', __dir__)
 
   class Error < StandardError; end
 
-  def self.form_for(object, form_options = {}, &)
-    default_form_options = { action: form_options.delete(:url) || '#', method: 'post' }
-
-    merged_options = default_form_options.merge(form_options)
-
-    if block_given?
-      inputs = FormBuilder.new(object)
-
-      yield(inputs)
-
-      Tag.build(:form, object.to_h, merged_options) { "\n#{inputs.form_body.join("\n")}\n" }
-    else
-      Tag.build(:form, object.to_h, merged_options, &proc {})
-    end
+  def self.form_for(entity, attributes = {})
+    builded_form = FormBuilder.new(entity, attributes)
+    yield(builded_form) if block_given?
+    FormRenderer.render_html(builded_form.form_body)
   end
 end
+
+# User = Struct.new(:name, :job, keyword_init: true)
+# user = User.new job: 'hexlet'
+
+# result = HexletCode.form_for user do |f|
+#   f.input :job
+#   f.submit
+#   f.submit 'Wow'
+# end
+# puts result
+
+# <form action="#" method="post">
+#   <label for="name">Name</label>
+#   <input name="name" type="text" value="">
+#   <label for="job">Job</label>
+#   <input name="job" type="text" value="hexlet">
+#   <input type="submit" value="Save">
+# </form>
