@@ -46,7 +46,6 @@ class TestHexletCode < Minitest::Test
     test = HexletCode.form_for @user, url: '#' do |f|
       f.input :name
       f.input :job
-      f.submit
       f.submit 'Wow'
     end
     assert_equal test, fixture
