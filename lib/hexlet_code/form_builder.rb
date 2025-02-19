@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_support/all'
+
 module HexletCode
   class FormBuilder
     attr_reader :form_body
@@ -17,16 +19,12 @@ module HexletCode
     end
 
     def input(input_attr, input_attrs = {})
-      input_type = input_attrs.delete(:as) || :input
+      input_type = input_attrs.delete(:as) || :string
       input_attr_value = @entity.public_send(input_attr)
-      input_class = case input_type
-                    when :text
-                      Inputs::TextInput.new(input_attr, input_attr_value, input_attrs)
-                    when :input
-                      Inputs::StringInput.new(input_attr, input_attr_value, input_attrs)
-                    end
+      input_class = "HexletCode::Inputs::#{input_type.capitalize}Input"
+      input = input_class.constantize.new(input_attr, input_attr_value, input_attrs)
 
-      form_body[:inputs] << input_class
+      form_body[:inputs] << input
     end
 
     def submit(text_for_button = 'Save')
