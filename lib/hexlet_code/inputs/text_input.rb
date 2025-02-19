@@ -6,7 +6,6 @@ module HexletCode
       TAG_NAME = :textarea
       COLS = 20
       ROWS = 40
-      PAIRABLE = true
 
       def to_h
         { name: name, cols: COLS, rows: ROWS }.merge(@input_attrs)

@@ -13,13 +13,13 @@ module HexletCode
 
     def self.html_pair_check_and_select(input_object, input_attrs, input_value)
       tag_name = input_object.class::TAG_NAME
-      pair_bool = input_object.class::PAIRABLE
+      single_tag = Tag::SINGLE_TAGS.include?(tag_name)
 
       label = Tag.build(:label, for: input_object.name) { input_object.name.to_s.capitalize }
-      if pair_bool
-        label + Tag.build(tag_name, input_attrs) { input_value }
-      else
+      if single_tag
         label + Tag.build(tag_name, input_attrs)
+      else
+        label + Tag.build(tag_name, input_attrs) { input_value }
       end
     end
   end

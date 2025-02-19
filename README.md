@@ -30,7 +30,7 @@ The required form fields are passed through the block to the `form_for` method:
 ```ruby
 HexletCode.form_for user do |f|
   f.input :name
-  f.input :job, as: text
+  f.input :job, as: :text
 end
 ```
 
